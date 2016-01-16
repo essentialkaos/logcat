@@ -187,9 +187,9 @@ separator() {
 
   if [[ $name ]] ; then
     local adds=$(($cols - ${#name} - 4))
-    show "\n${SEP_SYMBOL}${SEP_SYMBOL} $name ${sep:0:$adds}\n" $BROWN
+    show "\n${SEP_SYMBOL}${SEP_SYMBOL} $name ${sep:0:$adds}\n" $GREY
   else
-    show "\n$sep\n" $BROWN
+    show "\n$sep\n" $GREY
   fi
 }
 
