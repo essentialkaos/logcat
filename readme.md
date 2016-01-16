@@ -16,8 +16,6 @@ yum install logcat
 We provide simple bash script `script.sh` for installing app from the sources.
 
 ```
-... install cracklib-check
-
 git clone https://github.com/essentialkaos/logcat.git
 cd logcat
 
@@ -33,6 +31,19 @@ sudo ./install.sh --debug
 #### Usage
 
 ```
+Usage: logcat <options> <file>...
+
+Options:
+
+  --follow, -f           Output appended data as the file grows
+  --head, -h num         Output the first part of files
+  --tail, -t num         Output the last part of files
+  --grep, -g text        Filter output by grep
+  --egrep, -G pattern    Filter output by egrep
+  --headers, -H          Show headers if files more than 1
+  --ignore-errors, -I    Don't show error messages if file not readable or not exist
+  --help, --usage, -h    Show this help message
+  --version, --ver, -v   Show information about version
 ```
 
 #### Build Status
