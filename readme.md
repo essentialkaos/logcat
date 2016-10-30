@@ -31,9 +31,9 @@ sudo ./install.sh --debug
 #### Usage
 
 ```
-Usage: logcat <options> <file>...
+Usage: logcat {options} file...
 
-Options:
+Options
 
   --follow, -f           Output appended data as the file grows
   --head, -h num         Output the first part of files
@@ -44,6 +44,18 @@ Options:
   --ignore-errors, -I    Don't show error messages if file not readable or not exist
   --help, --usage, -h    Show this help message
   --version, --ver, -v   Show information about version
+
+Examples
+
+  logcat some-file.tar.gz
+  Print some-file.tar.gz content
+
+  logcat -f some-file.log
+  Output appended to some-file.log data as the file grows
+
+  logcat -g 'SOME_TEXT' -t 10 *.7z
+  Read all 7z files, filter data by grep pattern and print only last 10 lines
+
 ```
 
 #### Build Status
