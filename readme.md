@@ -42,8 +42,8 @@ Options
   --egrep, -G pattern    Filter output by egrep
   --headers, -H          Show headers if files more than 1
   --ignore-errors, -I    Don't show error messages if file not readable or not exist
-  --help, --usage, -h    Show this help message
-  --version, --ver, -v   Show information about version
+  --help, -h             Show this help message
+  --version, -v          Show information about version
 
 Examples
 
