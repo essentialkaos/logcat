@@ -3,7 +3,7 @@
 ########################################################################################
 
 APP="LogCat"
-VER="1.3.2"
+VER="1.3.3"
 
 ########################################################################################
 
@@ -57,9 +57,9 @@ CL_BG_DARK="\e[${DARK};7m"
 
 ########################################################################################
 
-SUPPORTED_ARGS="!ignore_errors grep egrep !follow head tail !headers
+SUPPORTED_ARGS="!ignore_errors grep egrep !follow head tail !headers 
  !no_colors !help !usage !version !ver"
-SHORT_ARGS="f:!follow h:head t:tail H:!headers I:!ignore_errors g:grep G:egrep
+SHORT_ARGS="f:!follow h:head t:tail H:!headers I:!ignore_errors g:grep G:egrep 
  nc:!no_colors v:!version h:!help"
 
 ########################################################################################
