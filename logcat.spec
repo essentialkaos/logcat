@@ -18,11 +18,11 @@
 
 Summary:            Utility for controllable log viewing with sudo
 Name:               logcat
-Version:            1.3.1
+Version:            1.3.2
 Release:            0%{?dist}
 License:            EKOL
 Group:              Applications/System
-URL:                http://essentialkaos.com
+URL:                https://github.com/essentialkaos/logcat
 
 Source0:            https://source.kaos.io/%{name}/%{name}-%{version}.tar.bz2
 
@@ -66,6 +66,9 @@ rm -rf %{buildroot}
 ########################################################################################
 
 %changelog
+* Sun Oct 30 2016 Anton Novojilov <andy@essentialkaos.com> - 1.3.2-0
+- UI improvements
+
 * Sat Jan 16 2016 Anton Novojilov <andy@essentialkaos.com> - 1.3.1-0
 - Removed shenx usage
 - Minor improvements
