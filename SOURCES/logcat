@@ -251,8 +251,8 @@ usage() {
     show "  ${CL_GREEN}--egrep, -G ${CL_GREY}pattern${CL_NORM}    Filter output by egrep"
     show "  ${CL_GREEN}--headers, -H${CL_NORM}          Show headers if files more than 1"
     show "  ${CL_GREEN}--ignore-errors, -I${CL_NORM}    Don't show error messages if file not readable or not exist"
-    show "  ${CL_GREEN}--help, --usage, -h${CL_NORM}    Show this help message"
-    show "  ${CL_GREEN}--version, --ver, -v${CL_NORM}   Show information about version"
+    show "  ${CL_GREEN}--help, -h${CL_NORM}             Show this help message"
+    show "  ${CL_GREEN}--version, -v${CL_NORM}          Show information about version"
   fi
   show ""
   show "Examples" $BOLD
