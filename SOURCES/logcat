@@ -83,7 +83,7 @@ main() {
   [[ $version || $ver ]] && about && exit 0
   [[ $# -eq 0 || $usage || $help ]] && usage && exit 0
 
-  if [[ `id -u` -ne 0 ]] ; then
+  if [[ $(id -u) -ne 0 ]] ; then
     show "Error! You must have root priveleges for use this utility." $RED
     exit 1
   fi
@@ -113,7 +113,7 @@ main() {
     [[ ! -r $file && ! $ignore_errors ]] && show "Can't read file <$file> - file is not readable." $RED && continue
 
     is_file_readed=""
-    file_path=`readlink -f "$file"`
+    file_path=$(readlink -f "$file")
 
     while read path ; do
       if [[ $file_path =~ $path ]] ; then
@@ -143,7 +143,7 @@ readFile() {
 
   local app ext
 
-  ext=`echo "$file" | sed 's/.*\.//'`
+  ext=$(echo "$file" | sed 's/.*\.//')
 
   if [[ "$ext" == "gz" ]] ; then
     if ! checkDeps "gzip" ; then
