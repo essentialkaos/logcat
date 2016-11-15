@@ -11,4 +11,4 @@ engines:
 
 ratings:
    paths:
-     - "SOURCES/7zcat"
+     - SOURCES/logcat
