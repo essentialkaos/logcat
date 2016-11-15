@@ -18,7 +18,7 @@
 
 Summary:            Utility for controllable log viewing with sudo
 Name:               logcat
-Version:            1.3.3
+Version:            1.4.0
 Release:            0%{?dist}
 License:            EKOL
 Group:              Applications/System
@@ -66,6 +66,9 @@ rm -rf %{buildroot}
 ########################################################################################
 
 %changelog
+* Wed Nov 16 2016 Anton Novojilov <andy@essentialkaos.com> - 1.4.0-0
+- Code refactoring
+
 * Mon Oct 31 2016 Anton Novojilov <andy@essentialkaos.com> - 1.3.3-0
 - Fixed bug with arguments parsing
 

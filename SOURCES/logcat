@@ -3,7 +3,7 @@
 ########################################################################################
 
 APP="LogCat"
-VER="1.3.3"
+VER="1.4.0"
 
 ########################################################################################
 
@@ -83,7 +83,7 @@ main() {
   [[ $version || $ver ]] && about && exit 0
   [[ $# -eq 0 || $usage || $help ]] && usage && exit 0
 
-  if [[ `id -u` -ne 0 ]] ; then
+  if [[ $(id -u) -ne 0 ]] ; then
     show "Error! You must have root priveleges for use this utility." $RED
     exit 1
   fi
@@ -101,25 +101,25 @@ main() {
   [[ "$head" == "true" ]] && head=$DEF_LINES
   [[ "$tail" == "true" ]] && tail=$DEF_LINES
 
-  local file path show_header
+  local file path show_header is_file_readed file_path
 
   [[ $# -gt 1 && $headers ]] && show_header=true
 
-  for file in $@ ; do
+  for file in "$@" ; do
     [[ -d $file ]] && continue
     [[ ! -s $file ]] && continue
 
     [[ ! -e $file && ! $ignore_errors ]] && show "Can't read file <$file> - file is not exist." $RED && continue
     [[ ! -r $file && ! $ignore_errors ]] && show "Can't read file <$file> - file is not readable." $RED && continue
 
-    local is_file_readed=""
-    local file_path=`readlink -f $file`
+    is_file_readed=""
+    file_path=$(readlink -f "$file")
 
     while read path ; do
       if [[ $file_path =~ $path ]] ; then
-        [[ $show_header ]] && separator $file_path
+        [[ $show_header ]] && separator "$file_path"
 
-        readFile $file_path
+        readFile "$file_path"
         is_file_readed=true
 
         break
@@ -132,11 +132,18 @@ main() {
   [[ $show_header ]] && separator
 }
 
+# Read file
+#
+# 1: Path to file (String)
+#
+# Code: No
+# Echo: No
 readFile() {
   local file="$1"
-  local ext=`echo "$file" | sed 's/.*\.//'`
 
-  local app
+  local app ext
+
+  ext=$(echo "$file" | sed 's/.*\.//')
 
   if [[ "$ext" == "gz" ]] ; then
     if ! checkDeps "gzip" ; then
@@ -172,45 +179,58 @@ readFile() {
     app="cat"
   fi
 
-  if [[ "$app" == "cat" && $follow ]] ; then
-    tail -f $file
+  if [[ "$app" == "cat" && -n "$follow" ]] ; then
+    tail -f "$file"
     exit 0
   elif [[ $head ]] ; then
-    $app $file | head -${head}
+    $app "$file" | head "-${head}"
   elif [[ $tail ]] ; then
-    $app $file | tail -${tail}
+    $app "$file" | tail "-${tail}"
   else
     if [[ $grep ]] ; then
-      LC_ALL=C $app $file | grep "$grep"
+      LC_ALL=C $app "$file" | grep "$grep"
     elif [[ $egrep ]]; then
-      LC_ALL=C $app $file | grep "$egrep"
+      LC_ALL=C $app "$file" | grep "$egrep"
     else
-      $app $file
+      $app "$file"
     fi
   fi
 }
 
+# Print separator
+#
+# 1: Title (String) [Optional]
+#
+# Code: No
+# Echo: No
 separator() {
-  local name="$1"
-  local cols=$(tput cols)
+  local title="$1"
 
-  local i sep
+  local i sep cols
 
-  for i in $(seq 1 $cols) ; do
+  cols=$(tput cols)
+
+  for i in $(seq 1 "$cols") ; do
     sep="${sep}${SEP_SYMBOL}"
   done
 
-  if [[ $name ]] ; then
-    local adds=$(($cols - ${#name} - 4))
-    show "\n${SEP_SYMBOL}${SEP_SYMBOL} $name ${sep:0:$adds}\n" $GREY
+  if [[ -n "$title" ]] ; then
+    local adds=$(( cols - ${#title} - 4 ))
+    show "\n${SEP_SYMBOL}${SEP_SYMBOL} $title ${sep:0:$adds}\n" $GREY
   else
     show "\n$sep\n" $GREY
   fi
 }
 
+# Check required dependencies
+#
+# *: Required apps
+#
+# Code: No
+# Echo: No
 checkDeps() {
-  for app in $@ ; do
-    type -P $app &> /dev/null
+  for app in "$@" ; do
+    type -P "$app" &> /dev/null
     [[ $? -eq 1 ]] && return 1
   done
 
@@ -219,14 +239,25 @@ checkDeps() {
 
 ###############################################################################
 
+# Show message
+#
+# 1: Message (String)
+# 2: Message color (Number) [Optional]
+#
+# Code: No
+# Echo: No
 show() {
   if [[ -n "$2" && -z "$no_colors" ]] ; then
     echo -e "\e[${2}m${1}\e[0m"
   else
-    echo -e "$1"
+    echo -e "$*"
   fi
 }
 
+# Print usage info
+#
+# Code: No
+# Echo: No
 usage() {
   show ""
   show "${CL_BOLD}Usage:${CL_NORM} logcat ${CL_GREEN}{options}${CL_NORM} file..."
@@ -268,13 +299,23 @@ usage() {
   show ""
 }
 
+# Show info about version
+#
+# Code: No
+# Echo: No
 about() {
   show "${CL_BL_CYAN}$APP${CL_NORM} ${CL_CYAN}$VER${CL_NORM} - Utility for controllable log viewing with sudo"
   show ""
-  show "Copyright (C) 2009-2016 Essential Kaos" $DARK
+  show "Copyright (C) 2009-2016 ESSENTIAL KAOS" $DARK
   show "Essential Kaos Open Source License <https://essentialkaos.com/ekol>" $DARK
 }
 
+# Show warning message about unsupported argument
+#
+# 1: Argument name (String)
+#
+# Code: No
+# Echo: No
 showArgWarn() {
   show "Unknown argument $1." $RED
   exit 1
@@ -286,11 +327,11 @@ showArgWarn() {
 
 unset arg argn argm argv argt argk
 
-argv="$@" ; argt=""
+argv="$*" ; argt=""
 
 while [[ -n "$1" ]] ; do
   if [[ "$1" =~ \  && -n "$argn" ]] ; then
-    declare $argn="$1"
+    declare "$argn=$1"
 
     unset argn && shift && continue
   elif [[ $1 =~ ^-{1}[a-zA-Z0-9]{1,2}+.*$ ]] ; then
@@ -306,7 +347,7 @@ while [[ -n "$1" ]] ; do
     if [[ -z "$argn" ]] ; then
       argn=$arg
     else
-      [[ -z "$argk" ]] && ( showArgValWarn "--$argn" 2> /dev/null || : ) || declare $argn=true
+      [[ -z "$argk" ]] && ( showArgValWarn "--$argn" 2> /dev/null || : ) || declare "$argn=true"
       argn=$arg
     fi
 
@@ -316,7 +357,7 @@ while [[ -n "$1" ]] ; do
     fi
 
     if [[ ${BASH_REMATCH[0]:0:1} == "!" ]] ; then
-      declare $argn=true ; unset argn ; argk=true
+      declare "$argn=true" ; unset argn ; argk=true
     else
       unset argk
     fi
@@ -335,7 +376,7 @@ while [[ -n "$1" ]] ; do
         shift && continue
       fi
 
-      [[ -n "${!argm}" && $MERGEABLE_ARGS\  =~ $argm\  ]] && declare $argm="${!argm} ${arg[@]:1:99}" || declare $argm="${arg[@]:1:99}"
+      [[ -n "${!argm}" && $MERGEABLE_ARGS\  =~ $argm\  ]] && declare "$argm=${!argm} ${arg[@]:1:99}" || declare "$argm=${arg[@]:1:99}"
 
       unset argm && shift && continue
     else
@@ -344,7 +385,7 @@ while [[ -n "$1" ]] ; do
       if [[ -z "$argn" ]] ; then
         argn=$arg
       else
-        [[ -z "$argk" ]] && ( showArgValWarn "--$argn" 2> /dev/null || : ) || declare $argn=true
+        [[ -z "$argk" ]] && ( showArgValWarn "--$argn" 2> /dev/null || : ) || declare "$argn=true"
         argn=$arg
       fi
 
@@ -354,7 +395,7 @@ while [[ -n "$1" ]] ; do
       fi
 
       if [[ ${BASH_REMATCH[0]:0:1} == "!" ]] ; then
-        declare $argn=true ; unset argn ; argk=true
+        declare "$argn=true" ; unset argn ; argk=true
       else
         unset argk
       fi
@@ -363,7 +404,7 @@ while [[ -n "$1" ]] ; do
     fi
   else
     if [[ -n "$argn" ]] ; then
-      [[ -n "${!argn}" && $MERGEABLE_ARGS\  =~ $argn\  ]] && declare $argn="${!argn} $1" || declare $argn="$1"
+      [[ -n "${!argn}" && $MERGEABLE_ARGS\  =~ $argn\  ]] && declare "$argn=${!argn} $1" || declare "$argn=$1"
 
       unset argn && shift && continue
     fi
@@ -373,7 +414,7 @@ while [[ -n "$1" ]] ; do
 
 done
 
-[[ -n "$argn" ]] && declare $argn=true
+[[ -n "$argn" ]] && declare "$argn=true"
 
 unset arg argn argm argk
 
