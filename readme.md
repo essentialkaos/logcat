@@ -1,17 +1,24 @@
-### LogCat
+## LogCat [![Code Climate](https://codeclimate.com/github/essentialkaos/logcat/badges/gpa.svg)](https://codeclimate.com/github/essentialkaos/logcat)
 
 `logcat` is utility for controllable log viewing with sudo.
 
-#### Installation
+### Installation
 
-###### From ESSENTIAL KAOS Public repo for RHEL6/CentOS6
+##### From ESSENTIAL KAOS Public repo for RHEL6/CentOS6
 
 ```
-yum install -y http://release.yum.kaos.io/i386/kaos-repo-6.8-0.el6.noarch.rpm
-yum install logcat
+[sudo] yum install -y https://yum.kaos.io/6/release/i386/kaos-repo-7.0-0.el6.noarch.rpm
+[sudo] yum install logcat
 ```
 
-###### Using install.sh
+##### From ESSENTIAL KAOS Public repo for RHEL7/CentOS7
+
+```
+[sudo] yum install -y https://yum.kaos.io/7/release/x86_64/kaos-repo-7.0-0.el7.noarch.rpm
+[sudo] yum install logcat
+```
+
+##### Using install.sh
 
 We provide simple bash script `script.sh` for installing app from the sources.
 
@@ -28,7 +35,7 @@ If you have some issues with installing, try to use script in debug mode:
 sudo ./install.sh --debug
 ```
 
-#### Usage
+### Usage
 
 ```
 Usage: logcat {options} file...
@@ -58,13 +65,13 @@ Examples
 
 ```
 
-#### Build Status
+### Build Status
 
 | Repository | Status |
 |------------|--------|
 | Stable | [![Build Status](https://travis-ci.org/essentialkaos/logcat.svg?branch=master)](https://travis-ci.org/essentialkaos/logcat) |
 | Unstable | [![Build Status](https://travis-ci.org/essentialkaos/logcat.svg?branch=develop)](https://travis-ci.org/essentialkaos/logcat) |
 
-#### License
+### License
 
 [EKOL](https://essentialkaos.com/ekol)
