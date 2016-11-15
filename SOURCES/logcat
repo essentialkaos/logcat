@@ -3,7 +3,7 @@
 ########################################################################################
 
 APP="LogCat"
-VER="1.3.3"
+VER="1.4.0"
 
 ########################################################################################
 
@@ -132,6 +132,12 @@ main() {
   [[ $show_header ]] && separator
 }
 
+# Read file
+#
+# 1: Path to file (String)
+#
+# Code: No
+# Echo: No
 readFile() {
   local file="$1"
   local ext=`echo "$file" | sed 's/.*\.//'`
@@ -190,8 +196,14 @@ readFile() {
   fi
 }
 
+# Print separator
+#
+# 1: Title (String) [Optional]
+#
+# Code: No
+# Echo: No
 separator() {
-  local name="$1"
+  local title="$1"
   local cols=$(tput cols)
 
   local i sep
@@ -200,17 +212,23 @@ separator() {
     sep="${sep}${SEP_SYMBOL}"
   done
 
-  if [[ $name ]] ; then
-    local adds=$(($cols - ${#name} - 4))
-    show "\n${SEP_SYMBOL}${SEP_SYMBOL} $name ${sep:0:$adds}\n" $GREY
+  if [[ -n "$title" ]] ; then
+    local adds=$(($cols - ${#title} - 4))
+    show "\n${SEP_SYMBOL}${SEP_SYMBOL} $title ${sep:0:$adds}\n" $GREY
   else
     show "\n$sep\n" $GREY
   fi
 }
 
+# Check required dependencies
+#
+# *: Required apps
+#
+# Code: No
+# Echo: No
 checkDeps() {
-  for app in $@ ; do
-    type -P $app &> /dev/null
+  for app in "$@" ; do
+    type -P "$app" &> /dev/null
     [[ $? -eq 1 ]] && return 1
   done
 
@@ -219,14 +237,25 @@ checkDeps() {
 
 ###############################################################################
 
+# Show message
+#
+# 1: Message (String)
+# 2: Message color (Number) [Optional]
+#
+# Code: No
+# Echo: No
 show() {
   if [[ -n "$2" && -z "$no_colors" ]] ; then
     echo -e "\e[${2}m${1}\e[0m"
   else
-    echo -e "$1"
+    echo -e "$*"
   fi
 }
 
+# Print usage info
+#
+# Code: No
+# Echo: No
 usage() {
   show ""
   show "${CL_BOLD}Usage:${CL_NORM} logcat ${CL_GREEN}{options}${CL_NORM} file..."
@@ -268,13 +297,23 @@ usage() {
   show ""
 }
 
+# Show info about version
+#
+# Code: No
+# Echo: No
 about() {
   show "${CL_BL_CYAN}$APP${CL_NORM} ${CL_CYAN}$VER${CL_NORM} - Utility for controllable log viewing with sudo"
   show ""
-  show "Copyright (C) 2009-2016 Essential Kaos" $DARK
+  show "Copyright (C) 2009-2016 ESSENTIAL KAOS" $DARK
   show "Essential Kaos Open Source License <https://essentialkaos.com/ekol>" $DARK
 }
 
+# Show warning message about unsupported argument
+#
+# 1: Argument name (String)
+#
+# Code: No
+# Echo: No
 showArgWarn() {
   show "Unknown argument $1." $RED
   exit 1
@@ -286,11 +325,11 @@ showArgWarn() {
 
 unset arg argn argm argv argt argk
 
-argv="$@" ; argt=""
+argv="$*" ; argt=""
 
 while [[ -n "$1" ]] ; do
   if [[ "$1" =~ \  && -n "$argn" ]] ; then
-    declare $argn="$1"
+    declare "$argn=$1"
 
     unset argn && shift && continue
   elif [[ $1 =~ ^-{1}[a-zA-Z0-9]{1,2}+.*$ ]] ; then
@@ -306,7 +345,7 @@ while [[ -n "$1" ]] ; do
     if [[ -z "$argn" ]] ; then
       argn=$arg
     else
-      [[ -z "$argk" ]] && ( showArgValWarn "--$argn" 2> /dev/null || : ) || declare $argn=true
+      [[ -z "$argk" ]] && ( showArgValWarn "--$argn" 2> /dev/null || : ) || declare "$argn=true"
       argn=$arg
     fi
 
@@ -316,7 +355,7 @@ while [[ -n "$1" ]] ; do
     fi
 
     if [[ ${BASH_REMATCH[0]:0:1} == "!" ]] ; then
-      declare $argn=true ; unset argn ; argk=true
+      declare "$argn=true" ; unset argn ; argk=true
     else
       unset argk
     fi
@@ -335,7 +374,7 @@ while [[ -n "$1" ]] ; do
         shift && continue
       fi
 
-      [[ -n "${!argm}" && $MERGEABLE_ARGS\  =~ $argm\  ]] && declare $argm="${!argm} ${arg[@]:1:99}" || declare $argm="${arg[@]:1:99}"
+      [[ -n "${!argm}" && $MERGEABLE_ARGS\  =~ $argm\  ]] && declare "$argm=${!argm} ${arg[@]:1:99}" || declare "$argm=${arg[@]:1:99}"
 
       unset argm && shift && continue
     else
@@ -344,7 +383,7 @@ while [[ -n "$1" ]] ; do
       if [[ -z "$argn" ]] ; then
         argn=$arg
       else
-        [[ -z "$argk" ]] && ( showArgValWarn "--$argn" 2> /dev/null || : ) || declare $argn=true
+        [[ -z "$argk" ]] && ( showArgValWarn "--$argn" 2> /dev/null || : ) || declare "$argn=true"
         argn=$arg
       fi
 
@@ -354,7 +393,7 @@ while [[ -n "$1" ]] ; do
       fi
 
       if [[ ${BASH_REMATCH[0]:0:1} == "!" ]] ; then
-        declare $argn=true ; unset argn ; argk=true
+        declare "$argn=true" ; unset argn ; argk=true
       else
         unset argk
       fi
@@ -363,7 +402,7 @@ while [[ -n "$1" ]] ; do
     fi
   else
     if [[ -n "$argn" ]] ; then
-      [[ -n "${!argn}" && $MERGEABLE_ARGS\  =~ $argn\  ]] && declare $argn="${!argn} $1" || declare $argn="$1"
+      [[ -n "${!argn}" && $MERGEABLE_ARGS\  =~ $argn\  ]] && declare "$argn=${!argn} $1" || declare "$argn=$1"
 
       unset argn && shift && continue
     fi
@@ -373,7 +412,7 @@ while [[ -n "$1" ]] ; do
 
 done
 
-[[ -n "$argn" ]] && declare $argn=true
+[[ -n "$argn" ]] && declare "$argn=true"
 
 unset arg argn argm argk
 
