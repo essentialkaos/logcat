@@ -205,16 +205,17 @@ readFile() {
 # Echo: No
 separator() {
   local title="$1"
-  local cols=$(tput cols)
 
-  local i sep
+  local i sep cols
 
-  for i in $(seq 1 $cols) ; do
+  cols=$(tput cols)
+
+  for i in $(seq 1 "$cols") ; do
     sep="${sep}${SEP_SYMBOL}"
   done
 
   if [[ -n "$title" ]] ; then
-    local adds=$(($cols - ${#title} - 4))
+    local adds=$(( cols - ${#title} - 4 ))
     show "\n${SEP_SYMBOL}${SEP_SYMBOL} $title ${sep:0:$adds}\n" $GREY
   else
     show "\n$sep\n" $GREY
