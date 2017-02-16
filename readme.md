@@ -1,4 +1,4 @@
-## LogCat [![Code Climate](https://codeclimate.com/github/essentialkaos/logcat/badges/gpa.svg)](https://codeclimate.com/github/essentialkaos/logcat)
+## LogCat [![Code Climate](https://codeclimate.com/github/essentialkaos/logcat/badges/gpa.svg)](https://codeclimate.com/github/essentialkaos/logcat) [![License](https://gh.kaos.io/ekol.svg)](https://essentialkaos.com/ekol)
 
 `logcat` is utility for controllable log viewing with sudo.
 
