@@ -46,10 +46,10 @@ for viewing some logs with using sudo command.
 %install
 rm -rf %{buildroot}
 
-install -dm 755 %{buildroot}%{_sbindir}
+install -dm 755 %{buildroot}%{_bindir}
 install -dm 755 %{buildroot}%{_sysconfdir}
 
-install -pm 755 %{name} %{buildroot}%{_sbindir}/%{name}
+install -pm 755 %{name} %{buildroot}%{_bindir}/%{name}
 install -pm 644 %{name}.conf %{buildroot}%{_sysconfdir}
 
 %clean
@@ -61,7 +61,7 @@ rm -rf %{buildroot}
 %defattr(-, root, root, -)
 %doc LICENSE.EN LICENSE.RU
 %config(noreplace) %{_sysconfdir}/%{name}.conf
-%{_sbindir}/%{name}
+%{_bindir}/%{name}
 
 ########################################################################################
 

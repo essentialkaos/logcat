@@ -99,22 +99,26 @@ main() {
   local file path show_header is_file_readed file_path is_root
 
   [[ $# -gt 1 && $headers ]] && show_header=true
-  [[ $(id -u) -ne 0 ]] && is_root=true
+  [[ $(id -u) -eq 0 ]] && is_root=true
 
   for file in "$@" ; do
     [[ -d $file ]] && continue
-    [[ ! -s $file ]] && continue
 
     [[ ! -e $file && ! $ignore_errors ]] && show "Can't read file <$file> - file does not exist." $RED && continue
     [[ ! -r $file && ! $ignore_errors ]] && show "Can't read file <$file> - file is not readable." $RED && continue
 
-    if [[ -n "$is_root" ]] ; then
+    [[ ! -s $file ]] && continue
+
+    if [[ -z "$is_root" ]] || isReadableForAll "$file" ; then
+      [[ $show_header ]] && separator "$file"
+      readFile "$file"
+    else
       is_file_readed=""
       file_path=$(readlink -f "$file")
 
       while read path ; do
         if [[ $file_path =~ $path ]] ; then
-          [[ $show_header ]] && separator "$file_path"
+          [[ $show_header ]] && separator "$file"
 
           readFile "$file_path"
           is_file_readed=true
@@ -218,6 +222,20 @@ separator() {
   else
     show "\n$sep\n" $GREY
   fi
+}
+
+# Check if file readable for all
+#
+# 1: File (String)
+#
+# Code: Yes
+# Echo: No
+isReadableForAll() {
+  if [[ $(stat -c '%A' $file | cut -c8) == "r" ]] ; then
+    return 0
+  fi
+
+  return 1
 }
 
 # Check required dependencies
