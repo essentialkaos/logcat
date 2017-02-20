@@ -16,7 +16,7 @@
 
 ########################################################################################
 
-Summary:            Utility for controllable log viewing with sudo
+Summary:            Utility for log viewing with additional access control mechanism
 Name:               logcat
 Version:            2.0.0
 Release:            0%{?dist}
@@ -34,8 +34,7 @@ Provides:           %{name} = %{version}-%{release}
 ########################################################################################
 
 %description
-Some system log can be viewed only with root priveleges. This is utility is proxy
-for viewing some logs with using sudo command.
+Utility for log viewing with additional access control mechanism (for sudo logcat).
 
 ########################################################################################
 
@@ -68,6 +67,7 @@ rm -rf %{buildroot}
 %changelog
 * Mon Feb 20 2017 Anton Novojilov <andy@essentialkaos.com> - 2.0.0-0
 - Added support of reading non-root owned files (if user has sufficient privileges)
+- Overall improvements
 - Grammar fixes
 
 * Wed Nov 16 2016 Anton Novojilov <andy@essentialkaos.com> - 1.4.0-0
