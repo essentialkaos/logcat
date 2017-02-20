@@ -231,7 +231,7 @@ separator() {
 # Code: Yes
 # Echo: No
 isReadableForAll() {
-  if [[ $(stat -c '%A' $file | cut -c8) == "r" ]] ; then
+  if [[ $(stat -c '%A' "$1" | cut -c8) == "r" ]] ; then
     return 0
   fi
 
