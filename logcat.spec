@@ -18,7 +18,7 @@
 
 Summary:            Utility for controllable log viewing with sudo
 Name:               logcat
-Version:            1.4.0
+Version:            2.0.0
 Release:            0%{?dist}
 License:            EKOL
 Group:              Applications/System
@@ -50,7 +50,7 @@ install -dm 755 %{buildroot}%{_sbindir}
 install -dm 755 %{buildroot}%{_sysconfdir}
 
 install -pm 755 %{name} %{buildroot}%{_sbindir}/%{name}
-install -pm 600 %{name}.conf %{buildroot}%{_sysconfdir}
+install -pm 644 %{name}.conf %{buildroot}%{_sysconfdir}
 
 %clean
 rm -rf %{buildroot}
@@ -66,6 +66,10 @@ rm -rf %{buildroot}
 ########################################################################################
 
 %changelog
+* Mon Feb 20 2017 Anton Novojilov <andy@essentialkaos.com> - 2.0.0-0
+- Added support of reading non-root owned files (if user has sufficient privileges)
+- Grammar fixes
+
 * Wed Nov 16 2016 Anton Novojilov <andy@essentialkaos.com> - 1.4.0-0
 - Code refactoring
 

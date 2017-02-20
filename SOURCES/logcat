@@ -3,7 +3,7 @@
 ########################################################################################
 
 APP="LogCat"
-VER="1.4.0"
+VER="2.0.0"
 
 ########################################################################################
 
@@ -83,11 +83,6 @@ main() {
   [[ $version || $ver ]] && about && exit 0
   [[ $# -eq 0 || $usage || $help ]] && usage && exit 0
 
-  if [[ $(id -u) -ne 0 ]] ; then
-    show "Error! You must have root privileges for using this utility." $RED
-    exit 1
-  fi
-
   if [[ ! -f $CONF || ! -r $CONF ]] ; then
     show "Error! Configuration file does not exist or is not readable." $RED
     exit 1
@@ -101,9 +96,10 @@ main() {
   [[ "$head" == "true" ]] && head=$DEF_LINES
   [[ "$tail" == "true" ]] && tail=$DEF_LINES
 
-  local file path show_header is_file_readed file_path
+  local file path show_header is_file_readed file_path is_root
 
   [[ $# -gt 1 && $headers ]] && show_header=true
+  [[ $(id -u) -ne 0 ]] && is_root=true
 
   for file in "$@" ; do
     [[ -d $file ]] && continue
@@ -112,21 +108,23 @@ main() {
     [[ ! -e $file && ! $ignore_errors ]] && show "Can't read file <$file> - file does not exist." $RED && continue
     [[ ! -r $file && ! $ignore_errors ]] && show "Can't read file <$file> - file is not readable." $RED && continue
 
-    is_file_readed=""
-    file_path=$(readlink -f "$file")
+    if [[ -n "$is_root" ]] ; then
+      is_file_readed=""
+      file_path=$(readlink -f "$file")
 
-    while read path ; do
-      if [[ $file_path =~ $path ]] ; then
-        [[ $show_header ]] && separator "$file_path"
+      while read path ; do
+        if [[ $file_path =~ $path ]] ; then
+          [[ $show_header ]] && separator "$file_path"
 
-        readFile "$file_path"
-        is_file_readed=true
+          readFile "$file_path"
+          is_file_readed=true
 
-        break
-      fi
-    done < <(grep -Pv '^[ ]*(#(?!\!)|[ ]*$)' $CONF)
+          break
+        fi
+      done < <(grep -Pv '^[ ]*(#(?!\!)|[ ]*$)' $CONF)
 
-    [[ ! $is_file_readed && ! $ignore_errors ]] && show "Can't read file <$file> - file reading is not allowed." $RED
+      [[ ! $is_file_readed && ! $ignore_errors ]] && show "Can't read file <$file> - file reading is not allowed." $RED
+    fi
   done
 
   [[ $show_header ]] && separator
@@ -306,7 +304,7 @@ usage() {
 about() {
   show "${CL_BL_CYAN}$APP${CL_NORM} ${CL_CYAN}$VER${CL_NORM} - Utility for controllable log viewing with sudo"
   show ""
-  show "Copyright (C) 2009-2016 ESSENTIAL KAOS" $DARK
+  show "Copyright (C) 2009-$(date +%Y) ESSENTIAL KAOS" $DARK
   show "Essential Kaos Open Source License <https://essentialkaos.com/ekol>" $DARK
 }
 
