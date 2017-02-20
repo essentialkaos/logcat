@@ -3,7 +3,7 @@
 ########################################################################################
 
 APP="LogCat"
-VER="1.4.0"
+VER="2.0.0"
 
 ########################################################################################
 
@@ -83,13 +83,8 @@ main() {
   [[ $version || $ver ]] && about && exit 0
   [[ $# -eq 0 || $usage || $help ]] && usage && exit 0
 
-  if [[ $(id -u) -ne 0 ]] ; then
-    show "Error! You must have root priveleges for use this utility." $RED
-    exit 1
-  fi
-
   if [[ ! -f $CONF || ! -r $CONF ]] ; then
-    show "Error! Configuration file is not exist or not readable." $RED
+    show "Error! Configuration file does not exist or is not readable." $RED
     exit 1
   fi
 
@@ -101,32 +96,39 @@ main() {
   [[ "$head" == "true" ]] && head=$DEF_LINES
   [[ "$tail" == "true" ]] && tail=$DEF_LINES
 
-  local file path show_header is_file_readed file_path
+  local file path show_header is_file_readed file_path is_root
 
   [[ $# -gt 1 && $headers ]] && show_header=true
+  [[ $(id -u) -eq 0 ]] && is_root=true
 
   for file in "$@" ; do
     [[ -d $file ]] && continue
-    [[ ! -s $file ]] && continue
 
-    [[ ! -e $file && ! $ignore_errors ]] && show "Can't read file <$file> - file is not exist." $RED && continue
+    [[ ! -e $file && ! $ignore_errors ]] && show "Can't read file <$file> - file does not exist." $RED && continue
     [[ ! -r $file && ! $ignore_errors ]] && show "Can't read file <$file> - file is not readable." $RED && continue
 
-    is_file_readed=""
-    file_path=$(readlink -f "$file")
+    [[ ! -s $file ]] && continue
 
-    while read path ; do
-      if [[ $file_path =~ $path ]] ; then
-        [[ $show_header ]] && separator "$file_path"
+    if [[ -z "$is_root" ]] || isReadableForAll "$file" ; then
+      [[ $show_header ]] && separator "$file"
+      readFile "$file"
+    else
+      is_file_readed=""
+      file_path=$(readlink -f "$file")
 
-        readFile "$file_path"
-        is_file_readed=true
+      while read path ; do
+        if [[ $file_path =~ $path ]] ; then
+          [[ $show_header ]] && separator "$file"
 
-        break
-      fi
-    done < <(grep -Pv '^[ ]*(#(?!\!)|[ ]*$)' $CONF)
+          readFile "$file_path"
+          is_file_readed=true
 
-    [[ ! $is_file_readed && ! $ignore_errors ]] && show "Can't read file <$file> - file reading is not allowed." $RED
+          break
+        fi
+      done < <(grep -Pv '^[ ]*(#(?!\!)|[ ]*$)' $CONF)
+
+      [[ ! $is_file_readed && ! $ignore_errors ]] && show "Can't read file <$file> - file reading is not allowed." $RED
+    fi
   done
 
   [[ $show_header ]] && separator
@@ -147,31 +149,31 @@ readFile() {
 
   if [[ "$ext" == "gz" ]] ; then
     if ! checkDeps "gzip" ; then
-      show "Can't read file $file - gzip not installed." $RED
+      show "Can't read file $file - gzip is not installed." $RED
     else
       app="zcat"
     fi
   elif [[ "$ext" == "bz" ]] ; then
     if ! checkDeps "bzip2" ; then
-      show "Can't read file $file - zcat not installed." $RED
+      show "Can't read file $file - zcat is not installed." $RED
     else
       app="bzcat"
     fi
   elif [[ "$ext" == "7z" ]] ; then
     if ! checkDeps "7zcat" ; then
-      show "Can't read file $file - 7zcat not installed." $RED
+      show "Can't read file $file - 7zcat is not installed." $RED
     else
       app="7zcat"
     fi
   elif [[ "$ext" == "xz" ]] ; then
     if ! checkDeps "xz" ; then
-      show "Can't read file $file - xz not installed." $RED
+      show "Can't read file $file - xz is not installed." $RED
     else
       app="xzcat"
     fi
   elif [[ "$ext" == "lz" ]] ; then
     if ! checkDeps "xz" ; then
-      show "Can't read file $file - xz not installed." $RED
+      show "Can't read file $file - xz is not installed." $RED
     else
       app="lzcat"
     fi
@@ -222,6 +224,20 @@ separator() {
   fi
 }
 
+# Check if file readable for all
+#
+# 1: File (String)
+#
+# Code: Yes
+# Echo: No
+isReadableForAll() {
+  if [[ $(stat -c '%A' "$1" | cut -c8) == "r" ]] ; then
+    return 0
+  fi
+
+  return 1
+}
+
 # Check required dependencies
 #
 # *: Required apps
@@ -270,8 +286,8 @@ usage() {
     show "  ${CL_GREEN}--tail, -t ${CL_GREY}num${CL_NORM} ${CL_DARK}.......${CL_NORM} Output the last part of files"
     show "  ${CL_GREEN}--grep, -g ${CL_GREY}text${CL_NORM} ${CL_DARK}......${CL_NORM} Filter output by grep"
     show "  ${CL_GREEN}--egrep, -G ${CL_GREY}pattern${CL_NORM} ${CL_DARK}..${CL_NORM} Filter output by egrep"
-    show "  ${CL_GREEN}--headers, -H${CL_NORM} ${CL_DARK}........${CL_NORM} Show headers if files more than 1"
-    show "  ${CL_GREEN}--ignore-errors, -I${CL_NORM} ${CL_DARK}..${CL_NORM} Don't show error messages if file not readable or not exist"
+    show "  ${CL_GREEN}--headers, -H${CL_NORM} ${CL_DARK}........${CL_NORM} Show headers if more than 1 file"
+    show "  ${CL_GREEN}--ignore-errors, -I${CL_NORM} ${CL_DARK}..${CL_NORM} Don't show error messages if file isn't readable or doesn't exist"
     show "  ${CL_GREEN}--help, -h${CL_NORM} ${CL_DARK}...........${CL_NORM} Show this help message"
     show "  ${CL_GREEN}--version, -v${CL_NORM} ${CL_DARK}........${CL_NORM} Show information about version"
   else
@@ -280,8 +296,8 @@ usage() {
     show "  ${CL_GREEN}--tail, -t ${CL_GREY}num${CL_NORM}         Output the last part of files"
     show "  ${CL_GREEN}--grep, -g ${CL_GREY}text${CL_NORM}        Filter output by grep"
     show "  ${CL_GREEN}--egrep, -G ${CL_GREY}pattern${CL_NORM}    Filter output by egrep"
-    show "  ${CL_GREEN}--headers, -H${CL_NORM}          Show headers if files more than 1"
-    show "  ${CL_GREEN}--ignore-errors, -I${CL_NORM}    Don't show error messages if file not readable or not exist"
+    show "  ${CL_GREEN}--headers, -H${CL_NORM}          Show headers if more than 1 file"
+    show "  ${CL_GREEN}--ignore-errors, -I${CL_NORM}    Don't show error messages if file isn't readable or doesn't exist"
     show "  ${CL_GREEN}--help, -h${CL_NORM}             Show this help message"
     show "  ${CL_GREEN}--version, -v${CL_NORM}          Show information about version"
   fi
@@ -306,7 +322,7 @@ usage() {
 about() {
   show "${CL_BL_CYAN}$APP${CL_NORM} ${CL_CYAN}$VER${CL_NORM} - Utility for controllable log viewing with sudo"
   show ""
-  show "Copyright (C) 2009-2016 ESSENTIAL KAOS" $DARK
+  show "Copyright (C) 2009-$(date +%Y) ESSENTIAL KAOS" $DARK
   show "Essential Kaos Open Source License <https://essentialkaos.com/ekol>" $DARK
 }
 

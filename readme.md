@@ -4,36 +4,39 @@
 
 ### Installation
 
-##### From ESSENTIAL KAOS Public repo for RHEL6/CentOS6
-
+<details>
+<summary><strong>From ESSENTIAL KAOS Public repo for RHEL6/CentOS6</strong></summary>
 ```
-[sudo] yum install -y https://yum.kaos.io/6/release/i386/kaos-repo-7.0-0.el6.noarch.rpm
+[sudo] yum install -y https://yum.kaos.io/6/release/i386/kaos-repo-7.2-0.el6.noarch.rpm
 [sudo] yum install logcat
 ```
+</details>
 
-##### From ESSENTIAL KAOS Public repo for RHEL7/CentOS7
-
+<details>
+<summary><strong>From ESSENTIAL KAOS Public repo for RHEL7/CentOS7</strong></summary>
 ```
-[sudo] yum install -y https://yum.kaos.io/7/release/x86_64/kaos-repo-7.0-0.el7.noarch.rpm
+[sudo] yum install -y https://yum.kaos.io/7/release/x86_64/kaos-repo-7.2-0.el7.noarch.rpm
 [sudo] yum install logcat
 ```
+</details>
 
-##### Using install.sh
-
+<details>
+<summary><strong>Using install.sh</strong></summary>
 We provide simple bash script `script.sh` for installing app from the sources.
 
 ```
 git clone https://github.com/essentialkaos/logcat.git
 cd logcat
 
-sudo ./install.sh
+[sudo] ./install.sh
 ```
 
 If you have some issues with installing, try to use script in debug mode:
 
 ```
-sudo ./install.sh --debug
+[sudo] ./install.sh --debug
 ```
+</details>
 
 ### Usage
 
@@ -47,8 +50,8 @@ Options
   --tail, -t num         Output the last part of files
   --grep, -g text        Filter output by grep
   --egrep, -G pattern    Filter output by egrep
-  --headers, -H          Show headers if files more than 1
-  --ignore-errors, -I    Don't show error messages if file not readable or not exist
+  --headers, -H          Show headers if more than 1 file
+  --ignore-errors, -I    Don't show error messages if file isn't readable or doesn't exist
   --help, -h             Show this help message
   --version, -v          Show information about version
 
