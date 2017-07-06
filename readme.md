@@ -67,11 +67,13 @@ Examples
 
 ### Build Status
 
-| Repository | Status |
-|------------|--------|
-| Stable | [![Build Status](https://travis-ci.org/essentialkaos/logcat.svg?branch=master)](https://travis-ci.org/essentialkaos/logcat) |
-| Unstable | [![Build Status](https://travis-ci.org/essentialkaos/logcat.svg?branch=develop)](https://travis-ci.org/essentialkaos/logcat) |
+| Branch | Status |
+|--------|--------|
+| `master` | [![Build Status](https://travis-ci.org/essentialkaos/logcat.svg?branch=master)](https://travis-ci.org/essentialkaos/logcat) |
+| `develop` | [![Build Status](https://travis-ci.org/essentialkaos/logcat.svg?branch=develop)](https://travis-ci.org/essentialkaos/logcat) |
 
 ### License
 
 [EKOL](https://essentialkaos.com/ekol)
+
+<p align="center"><a href="https://essentialkaos.com"><img src="https://gh.kaos.io/ekgh.svg"/></a></p>
