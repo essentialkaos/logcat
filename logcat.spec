@@ -18,7 +18,7 @@
 
 Summary:            Utility for log viewing with additional access control mechanism
 Name:               logcat
-Version:            2.0.2
+Version:            2.1.0
 Release:            0%{?dist}
 License:            EKOL
 Group:              Applications/System
@@ -65,6 +65,9 @@ rm -rf %{buildroot}
 ########################################################################################
 
 %changelog
+* Mon Sep 25 2017 Anton Novojilov <andy@essentialkaos.com> - 2.1.0-0
+- Code refactoring
+
 * Mon Apr 24 2017 Anton Novojilov <andy@essentialkaos.com> - 2.0.2-0
 - Arguments parser updated to v3 with fixed stderr output redirection for
   showArgWarn and showArgValWarn functions
