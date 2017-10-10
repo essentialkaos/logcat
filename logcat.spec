@@ -18,7 +18,7 @@
 
 Summary:            Utility for log viewing with additional access control mechanism
 Name:               logcat
-Version:            2.1.0
+Version:            2.1.1
 Release:            0%{?dist}
 License:            EKOL
 Group:              Applications/System
@@ -65,6 +65,9 @@ rm -rf %{buildroot}
 ########################################################################################
 
 %changelog
+* Tue Oct 10 2017 Anton Novojilov <andy@essentialkaos.com> - 2.1.1-0
+- Fixed bug with reading files with a+r permissions (readable for all)
+
 * Mon Sep 25 2017 Anton Novojilov <andy@essentialkaos.com> - 2.1.0-0
 - Code refactoring
 
