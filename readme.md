@@ -1,4 +1,4 @@
-## LogCat [![Build Status](https://travis-ci.org/essentialkaos/logcat.svg?branch=master)](https://travis-ci.org/essentialkaos/logcat) [![License](https://gh.kaos.io/ekol.svg)](https://essentialkaos.com/ekol)
+## `logcat` [![Build Status](https://travis-ci.org/essentialkaos/logcat.svg?branch=master)](https://travis-ci.org/essentialkaos/logcat) [![License](https://gh.kaos.io/ekol.svg)](https://essentialkaos.com/ekol)
 
 `logcat` is utility for controllable log viewing with sudo.
 
