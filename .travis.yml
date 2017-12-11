@@ -2,5 +2,16 @@ language: bash
 
 sudo: false
 
+addons:
+  apt:
+    sources:
+      - debian-sid
+    packages:
+      - shellcheck
+
 script:
-  - bash SOURCES/logcat
+ - bash -c 'shopt -s globstar; shellcheck install.sh'
+ - bash -c 'shopt -s globstar; shellcheck SOURCES/logcat'
+
+matrix:
+  fast_finish: true
