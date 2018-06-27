@@ -1,4 +1,4 @@
-## `logcat` [![Build Status](https://travis-ci.org/essentialkaos/logcat.svg?branch=master)](https://travis-ci.org/essentialkaos/logcat) [![License](https://gh.kaos.io/ekol.svg)](https://essentialkaos.com/ekol)
+## `logcat` [![Build Status](https://travis-ci.org/essentialkaos/logcat.svg?branch=master)](https://travis-ci.org/essentialkaos/logcat) [![License](https://gh.kaos.st/ekol.svg)](https://essentialkaos.com/ekol)
 
 `logcat` is utility for controllable log viewing with sudo.
 
@@ -7,7 +7,7 @@
 #### From ESSENTIAL KAOS Public repo for RHEL6/CentOS6
 
 ```
-[sudo] yum install -y https://yum.kaos.io/6/release/x86_64/kaos-repo-8.0-0.el6.noarch.rpm
+[sudo] yum install -y https://yum.kaos.st/6/release/x86_64/kaos-repo-9.1-0.el6.noarch.rpm
 [sudo] yum install logcat
 ```
 
@@ -15,7 +15,7 @@
 #### From ESSENTIAL KAOS Public repo for RHEL7/CentOS7
 
 ```
-[sudo] yum install -y https://yum.kaos.io/7/release/x86_64/kaos-repo-8.0-0.el7.noarch.rpm
+[sudo] yum install -y https://yum.kaos.st/7/release/x86_64/kaos-repo-9.1-0.el7.noarch.rpm
 [sudo] yum install logcat
 ```
 
@@ -76,4 +76,4 @@ Examples
 
 [EKOL](https://essentialkaos.com/ekol)
 
-<p align="center"><a href="https://essentialkaos.com"><img src="https://gh.kaos.io/ekgh.svg"/></a></p>
+<p align="center"><a href="https://essentialkaos.com"><img src="https://gh.kaos.st/ekgh.svg"/></a></p>

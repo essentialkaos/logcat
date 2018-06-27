@@ -1,4 +1,4 @@
-########################################################################################
+################################################################################
 
 %define _logdir           %{_localstatedir}/log
 %define _rundir           %{_localstatedir}/run
@@ -14,7 +14,7 @@
 %define _loc_datarootdir  %{_loc_prefix}/share
 %define _loc_includedir   %{_loc_prefix}/include
 
-########################################################################################
+################################################################################
 
 Summary:            Utility for log viewing with additional access control mechanism
 Name:               logcat
@@ -31,12 +31,13 @@ BuildRoot:          %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -
 
 Provides:           %{name} = %{version}-%{release}
 
-########################################################################################
+################################################################################
 
 %description
-Utility for log viewing with additional access control mechanism (for sudo logcat).
+Utility for log viewing with additional access control mechanism (for sudo
+logcat).
 
-########################################################################################
+################################################################################
 
 %prep
 %setup -q
@@ -54,7 +55,7 @@ install -pm 644 %{name}.conf %{buildroot}%{_sysconfdir}
 %clean
 rm -rf %{buildroot}
 
-########################################################################################
+################################################################################
 
 %files
 %defattr(-, root, root, -)
@@ -62,7 +63,7 @@ rm -rf %{buildroot}
 %config(noreplace) %{_sysconfdir}/%{name}.conf
 %{_bindir}/%{name}
 
-########################################################################################
+################################################################################
 
 %changelog
 * Tue Dec 12 2017 Anton Novojilov <andy@essentialkaos.com> - 2.1.3-0
@@ -82,7 +83,8 @@ rm -rf %{buildroot}
 - Output errors to stderr
 
 * Mon Feb 20 2017 Anton Novojilov <andy@essentialkaos.com> - 2.0.0-0
-- Added support of reading non-root owned files (if user has sufficient privileges)
+- Added support of reading non-root owned files (if user has sufficient
+  privileges)
 - Overall improvements
 - Grammar fixes
 
