@@ -4,7 +4,7 @@
 ########################################################################################
 
 APP="LogCat"
-VER="2.1.4"
+VER="2.1.5"
 
 ########################################################################################
 
@@ -62,8 +62,8 @@ main() {
     unset CL_BL_RED CL_BL_GREEN CL_BL_YELLOW CL_BL_BLUE CL_BL_MAG CL_BL_CYAN CL_BL_GREY CL_BL_DARK
   fi
 
-  [[ $version || $ver ]] && about && exit 0
-  [[ $# -eq 0 || $usage || $help ]] && usage && exit 0
+  [[ -n "$version" || -n "$ver" ]] && about && exit 0
+  [[ $# -eq 0 || -n "$usage" || -n "$help" ]] && usage && exit 0
 
   [[ "$head" == "true" ]] && head=$DEF_LINES
   [[ "$tail" == "true" ]] && tail=$DEF_LINES
@@ -82,7 +82,7 @@ readFiles() {
 
   [[ $(id -u) -eq 0 ]] && is_root=true
 
-  [[ $# -gt 1 && $headers ]] && show_headers=true
+  [[ $# -gt 1 && -n "$headers" ]] && show_headers=true
 
   for file in "$@" ; do
     [[ -d "$file" ]] && continue
@@ -102,7 +102,7 @@ readFiles() {
 
       while read -r path ; do
         if [[ $file_path =~ $path ]] ; then
-          [[ $show_headers ]] && separator "$file"
+          [[ -n "$show_headers" ]] && separator "$file"
 
           readFile "$file_path"
           is_file_readed=true
@@ -112,7 +112,7 @@ readFiles() {
       done < <(grep -Pv '^[ ]*(#(?!\!)|[ ]*$)' $CONF)
     fi
 
-    if [[ ! $is_file_readed && ! $ignore_errors ]] ; then
+    if [[ -z "$is_file_readed" && -z "$ignore_errors" ]] ; then
       if [[ -z "$is_root" ]] ; then
         error "Can't read file ${CL_BL_RED}${file}${CL_RED} - file reading is not allowed. Forgot sudo prefix?" $RED
       else
@@ -121,7 +121,7 @@ readFiles() {
     fi
   done
 
-  [[ $show_headers ]] && separator
+  [[ -n "$show_headers" ]] && separator
 }
 
 # Read file
@@ -173,14 +173,14 @@ readFile() {
   if [[ "$app" == "cat" && -n "$follow" ]] ; then
     tail -f "$file"
     exit 0
-  elif [[ $head ]] ; then
+  elif [[ -n "$head" ]] ; then
     $app "$file" | head "-${head}"
-  elif [[ $tail ]] ; then
+  elif [[ -n "$tail" ]] ; then
     $app "$file" | tail "-${tail}"
   else
-    if [[ $grep ]] ; then
+    if [[ -n "$grep" ]] ; then
       LC_ALL=C $app "$file" | grep "$grep"
-    elif [[ $egrep ]]; then
+    elif [[ -n "$egrep" ]]; then
       LC_ALL=C $app "$file" | grep "$egrep"
     else
       $app "$file"

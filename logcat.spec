@@ -18,13 +18,13 @@
 
 Summary:            Utility for log viewing with additional access control mechanism
 Name:               logcat
-Version:            2.1.4
+Version:            2.1.5
 Release:            0%{?dist}
 License:            EKOL
 Group:              Applications/System
 URL:                https://github.com/essentialkaos/logcat
 
-Source0:            https://source.kaos.io/%{name}/%{name}-%{version}.tar.bz2
+Source0:            https://source.kaos.st/%{name}/%{name}-%{version}.tar.bz2
 
 BuildArch:          noarch
 BuildRoot:          %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -66,6 +66,9 @@ rm -rf %{buildroot}
 ################################################################################
 
 %changelog
+* Fri Jan 04 2019 Anton Novojilov <andy@essentialkaos.com> - 2.1.5-0
+- Code refactoring
+
 * Wed Oct 24 2018 Anton Novojilov <andy@essentialkaos.com> - 2.1.4-0
 - Fixed bug with handling a huge amount of files
 
