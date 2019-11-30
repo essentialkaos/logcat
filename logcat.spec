@@ -18,7 +18,7 @@
 
 Summary:            Utility for log viewing with additional access control mechanism
 Name:               logcat
-Version:            2.1.5
+Version:            2.1.6
 Release:            0%{?dist}
 License:            EKOL
 Group:              Applications/System
@@ -66,6 +66,10 @@ rm -rf %{buildroot}
 ################################################################################
 
 %changelog
+* Sat Nov 30 2019 Anton Novojilov <andy@essentialkaos.com> - 2.1.6-0
+- Added handling of SCRIPT_DEBUG environment variable for enabling debug mode
+- Added handler for script errors
+
 * Fri Jan 04 2019 Anton Novojilov <andy@essentialkaos.com> - 2.1.5-0
 - Code refactoring
 
