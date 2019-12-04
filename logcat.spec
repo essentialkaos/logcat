@@ -66,7 +66,7 @@ rm -rf %{buildroot}
 ################################################################################
 
 %changelog
-* Wed Dec 04 2019 Anton Novojilov <andy@essentialkaos.com> - 2.15.7-0
+* Wed Dec 04 2019 Anton Novojilov <andy@essentialkaos.com> - 2.1.7-0
 - Removed handler for script errors
 
 * Sat Nov 30 2019 Anton Novojilov <andy@essentialkaos.com> - 2.1.6-0
