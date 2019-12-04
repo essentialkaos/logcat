@@ -1,4 +1,4 @@
-## `logcat` [![Build Status](https://travis-ci.org/essentialkaos/logcat.svg?branch=master)](https://travis-ci.org/essentialkaos/logcat) [![License](https://gh.kaos.st/ekol.svg)](https://essentialkaos.com/ekol)
+## `logcat` [![Build Status](https://travis-ci.com/essentialkaos/logcat.svg?branch=master)](https://travis-ci.com/essentialkaos/logcat) [![License](https://gh.kaos.st/ekol.svg)](https://essentialkaos.com/ekol)
 
 `logcat` is utility for controllable log viewing with sudo.
 
@@ -10,7 +10,6 @@
 [sudo] yum install -y yum install -y https://yum.kaos.st/kaos-repo-latest.el6.noarch.rpm
 [sudo] yum install logcat
 ```
-
 
 #### From ESSENTIAL KAOS Public repo for RHEL7/CentOS7
 
@@ -69,8 +68,8 @@ Examples
 
 | Branch | Status |
 |--------|--------|
-| `master` | [![Build Status](https://travis-ci.org/essentialkaos/logcat.svg?branch=master)](https://travis-ci.org/essentialkaos/logcat) |
-| `develop` | [![Build Status](https://travis-ci.org/essentialkaos/logcat.svg?branch=develop)](https://travis-ci.org/essentialkaos/logcat) |
+| `master` | [![Build Status](https://travis-ci.com/essentialkaos/logcat.svg?branch=master)](https://travis-ci.com/essentialkaos/logcat) |
+| `develop` | [![Build Status](https://travis-ci.com/essentialkaos/logcat.svg?branch=develop)](https://travis-ci.com/essentialkaos/logcat) |
 
 ### License
 
