@@ -11,7 +11,6 @@
 [sudo] yum install logcat
 ```
 
-
 #### From ESSENTIAL KAOS Public repo for RHEL7/CentOS7
 
 ```
