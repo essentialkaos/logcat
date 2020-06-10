@@ -1,21 +1,23 @@
-## `logcat` [![Build Status](https://travis-ci.com/essentialkaos/logcat.svg?branch=master)](https://travis-ci.com/essentialkaos/logcat) [![License](https://gh.kaos.st/ekol.svg)](https://essentialkaos.com/ekol)
+<p align="center"><a href="#readme"><img src="https://gh.kaos.st/logcat.svg"/></a></p>
+
+<p align="center">
+  <a href="https://travis-ci.com/essentialkaos/logcat"><img src="https://travis-ci.com/essentialkaos/logcat.svg"></a>
+  <a href="https://essentialkaos.com/ekol"><img src="https://gh.kaos.st/ekol.svg"></a>
+</p>
+
+<p align="center"><a href="#installation">Installation</a> • <a href="#usage">Usage</a> • <a href="#build-status">Build Status</a> • <a href="#license">License</a></p>
+
+<br/>
 
 `logcat` is utility for controllable log viewing with sudo.
 
 ### Installation
 
-#### From ESSENTIAL KAOS Public repo for RHEL6/CentOS6
+#### From ESSENTIAL KAOS Public repository
 
 ```
-[sudo] yum install -y yum install -y https://yum.kaos.st/kaos-repo-latest.el6.noarch.rpm
-[sudo] yum install logcat
-```
-
-#### From ESSENTIAL KAOS Public repo for RHEL7/CentOS7
-
-```
-[sudo] yum install -y yum install -y https://yum.kaos.st/kaos-repo-latest.el7.noarch.rpm
-[sudo] yum install logcat
+sudo yum install -y yum install -y https://yum.kaos.st/get/$(uname -r).rpm
+sudo yum install logcat
 ```
 
 #### Using `install.sh`
@@ -25,13 +27,13 @@ We provide simple bash script `script.sh` for installing app from the sources.
 git clone https://github.com/essentialkaos/logcat.git
 cd logcat
 
-[sudo] ./install.sh
+sudo ./install.sh
 ```
 
 If you have some issues with installing, try to use script in debug mode:
 
 ```
-[sudo] ./install.sh --debug
+sudo ./install.sh --debug
 ```
 
 ### Usage
