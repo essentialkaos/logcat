@@ -20,7 +20,7 @@ Summary:            Utility for log viewing with additional access control mecha
 Name:               logcat
 Version:            2.1.7
 Release:            0%{?dist}
-License:            EKOL
+License:            Apache License, Version 2.0
 Group:              Applications/System
 URL:                https://github.com/essentialkaos/logcat
 
@@ -59,7 +59,7 @@ rm -rf %{buildroot}
 
 %files
 %defattr(-, root, root, -)
-%doc LICENSE.EN LICENSE.RU
+%doc LICENSE
 %config(noreplace) %{_sysconfdir}/%{name}.conf
 %{_bindir}/%{name}
 
