@@ -1,7 +1,7 @@
 <p align="center"><a href="#readme"><img src="https://gh.kaos.st/logcat.svg"/></a></p>
 
 <p align="center">
-  <a href="https://github.com/essentialkaos/logcat/actions"><img src="https://github.com/essentialkaos/logcat/workflows/CI/badge.svg" alt="GitHub Actions Status" /></a>
+  <a href="https://kaos.sh/w/logcat/ci"><img src="https://kaos.sh/w/logcat/ci.svg" alt="GitHub Actions CI Status" /></a>
   <a href="#license"><img src="https://gh.kaos.st/apache2.svg"></a>
 </p>
 
@@ -70,8 +70,8 @@ Examples
 
 | Branch | Status |
 |--------|--------|
-| `master` | [![CI](https://github.com/essentialkaos/logcat/workflows/CI/badge.svg?branch=master)](https://github.com/essentialkaos/logcat/actions) |
-| `develop` | [![CI](https://github.com/essentialkaos/logcat/workflows/CI/badge.svg?branch=develop)](https://github.com/essentialkaos/logcat/actions) |
+| `master` | [![CI](https://kaos.sh/w/logcat/ci.svg?branch=master)](https://kaos.sh/w/logcat/ci?query=branch:master) |
+| `develop` | [![CI](https://kaos.sh/w/logcat/ci.svg?branch=master)](https://kaos.sh/w/logcat/ci?query=branch:develop) |
 
 ### License
 
