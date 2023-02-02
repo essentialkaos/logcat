@@ -30,8 +30,8 @@ ifneq ($(shell id -u), 0)
 endif
 
 	@echo -e "\e[1;36;49m\nInstalling app…\n\e[0m"
-	install -pm 755 SOURCES/logcat /usr/bin/
-	install -pm 644 SOURCES/logcat.conf /etc/
+	install -pm 755 SOURCES/logcat $(DESTDIR)/usr/bin/
+	install -pm 644 SOURCES/logcat.conf $(DESTDIR)/etc/
 
 	@echo -e "\e[1;32;49m\nApp successfully installed!\n\e[0m"
 

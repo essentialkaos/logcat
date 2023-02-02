@@ -20,9 +20,11 @@ sudo yum install -y yum install -y https://yum.kaos.st/get/$(uname -r).rpm
 sudo yum install logcat
 ```
 
-#### Using Makefile
+#### Using Makefile and Git
 
 ```bash
+git clone https://kaos.sh/logcat.git
+cd logcat
 sudo make install
 ```
 
