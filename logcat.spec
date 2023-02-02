@@ -1,8 +1,8 @@
 ################################################################################
 
-%define _logdir           %{_localstatedir}/log
-%define _rundir           %{_localstatedir}/run
-%define _lockdir          %{_localstatedir}/lock
+%define _logdir   %{_localstatedir}/log
+%define _rundir   %{_localstatedir}/run
+%define _lockdir  %{_localstatedir}/lock
 
 %define _loc_prefix       %{_prefix}/local
 %define _loc_exec_prefix  %{_loc_prefix}
@@ -16,20 +16,20 @@
 
 ################################################################################
 
-Summary:            Utility for log viewing with additional access control mechanism
-Name:               logcat
-Version:            2.1.7
-Release:            0%{?dist}
-License:            Apache License, Version 2.0
-Group:              Applications/System
-URL:                https://github.com/essentialkaos/logcat
+Summary:    Utility for log viewing with additional access control mechanism
+Name:       logcat
+Version:    2.2.0
+Release:    0%{?dist}
+License:    Apache License, Version 2.0
+Group:      Applications/System
+URL:        https://kaos.sh/logcat
 
-Source0:            https://source.kaos.st/%{name}/%{name}-%{version}.tar.bz2
+Source0:    https://source.kaos.st/%{name}/%{name}-%{version}.tar.bz2
 
-BuildArch:          noarch
-BuildRoot:          %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+BuildArch:  noarch
+BuildRoot:  %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-Provides:           %{name} = %{version}-%{release}
+Provides:   %{name} = %{version}-%{release}
 
 ################################################################################
 
@@ -66,6 +66,9 @@ rm -rf %{buildroot}
 ################################################################################
 
 %changelog
+* Thu Feb 02 2023 Anton Novojilov <andy@essentialkaos.com> - 2.2.0-0
+- Code refactoring
+
 * Wed Dec 04 2019 Anton Novojilov <andy@essentialkaos.com> - 2.1.7-0
 - Removed handler for script errors
 
