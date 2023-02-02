@@ -1,11 +1,11 @@
 ########################################################################################
 
 .DEFAULT_GOAL := help
-.PHONY = install uninstall install-shellcheck test help
+.PHONY = install uninstall get-shellcheck test help
 
 ########################################################################################
 
-install-shellcheck: ## Download and install the latest version of shellcheck (requires sudo)
+get-shellcheck: ## Download and install the latest version of shellcheck (requires sudo)
 ifneq ($(shell id -u), 0)
 	@echo -e "\e[31m▲ This target requires sudo\e[0m"
 	@exit 1
