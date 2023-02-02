@@ -18,7 +18,7 @@ jobs:
       - name: Check scripts with Shellcheck
         uses: essentialkaos/shellcheck-action@v1
         with:
-          files: install.sh SOURCES/logcat
+          files: SOURCES/logcat
 
   Perfecto:
     name: Perfecto
