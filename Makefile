@@ -1,7 +1,7 @@
 ########################################################################################
 
 .DEFAULT_GOAL := help
-.PHONY = install install-shellcheck test help
+.PHONY = install uninstall install-shellcheck test help
 
 ########################################################################################
 
@@ -30,10 +30,22 @@ ifneq ($(shell id -u), 0)
 endif
 
 	@echo -e "\e[1;36;49m\nInstalling app…\n\e[0m"
-	install -pm 755 SOURCES/logcat $(DESTDIR)/usr/bin/
-	install -pm 644 SOURCES/logcat.conf $(DESTDIR)/etc/
+	install -pm 755 SOURCES/logcat /usr/bin/
+	install -pm 644 SOURCES/logcat.conf /etc/
 
 	@echo -e "\e[1;32;49m\nApp successfully installed!\n\e[0m"
+
+uninstall: ## Uninstall app from current system (requires sudo)
+ifneq ($(shell id -u), 0)
+	@echo -e "\e[31m▲ This target requires sudo\e[0m"
+	@exit 1
+endif
+
+	@echo -e "\e[1;36;49m\nUninstalling app…\n\e[0m"
+	rm -f /usr/bin/logcat || :
+	rm -f /etc/logcat.conf || :
+
+	@echo -e "\e[1;32;49m\nApp successfully uninstalled!\n\e[0m"
 
 help: ## Show this info
 	@echo -e '\nSupported targets:\n'
