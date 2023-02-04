@@ -362,7 +362,6 @@ showo() {
 # Print error message
 #
 # 1: Message (String)
-# 2: Message color (Number) [Optional]
 #
 # Code: No
 # Echo: No
