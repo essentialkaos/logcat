@@ -1,18 +1,17 @@
 #!/usr/bin/env bash
-# shellcheck disable=SC1117,SC2034,SC2154
 
-########################################################################################
+################################################################################
 
 if [[ -n "${SCRIPT_DEBUG}" ]] ; then
   set -x
 fi
 
-########################################################################################
+################################################################################
 
 APP="LogCat"
-VER="2.1.7"
+VER="2.2.0"
 
-########################################################################################
+################################################################################
 
 NORM=0
 BOLD=1
@@ -26,108 +25,163 @@ CYAN=36
 GREY=37
 DARK=90
 
-CL_NORM="\e[0m"
+# shellcheck disable=SC2034
+CL_NORM="\e[${NORM}m"
+# shellcheck disable=SC2034
 CL_BOLD="\e[0;${BOLD};49m"
+# shellcheck disable=SC2034
 CL_UNLN="\e[0;${UNLN};49m"
+# shellcheck disable=SC2034
 CL_RED="\e[0;${RED};49m"
+# shellcheck disable=SC2034
 CL_GREEN="\e[0;${GREEN};49m"
+# shellcheck disable=SC2034
 CL_YELLOW="\e[0;${YELLOW};49m"
+# shellcheck disable=SC2034
 CL_BLUE="\e[0;${BLUE};49m"
+# shellcheck disable=SC2034
 CL_MAG="\e[0;${MAG};49m"
+# shellcheck disable=SC2034
 CL_CYAN="\e[0;${CYAN};49m"
+# shellcheck disable=SC2034
 CL_GREY="\e[0;${GREY};49m"
+# shellcheck disable=SC2034
 CL_DARK="\e[0;${DARK};49m"
+# shellcheck disable=SC2034
 CL_BL_RED="\e[1;${RED};49m"
+# shellcheck disable=SC2034
 CL_BL_GREEN="\e[1;${GREEN};49m"
+# shellcheck disable=SC2034
 CL_BL_YELLOW="\e[1;${YELLOW};49m"
+# shellcheck disable=SC2034
 CL_BL_BLUE="\e[1;${BLUE};49m"
+# shellcheck disable=SC2034
 CL_BL_MAG="\e[1;${MAG};49m"
+# shellcheck disable=SC2034
 CL_BL_CYAN="\e[1;${CYAN};49m"
+# shellcheck disable=SC2034
 CL_BL_GREY="\e[1;${GREY};49m"
 
-########################################################################################
+################################################################################
 
-SUPPORTED_ARGS="!ignore_errors grep egrep !follow head tail !headers 
- !no_colors !help !usage !version !ver"
-SHORT_ARGS="f:!follow h:head t:tail H:!headers I:!ignore_errors g:grep G:egrep 
- nc:!no_colors v:!version h:!help"
+SUPPORTED_OPTS="!ignore_errors grep egrep !follow head tail !headers 
+ !no_color !help !version"
+SHORT_OPTS="f:!follow h:head t:tail H:!headers I:!ignore_errors g:grep G:egrep 
+ nc:!no_color v:!version"
 
-########################################################################################
+################################################################################
 
-CONF="/etc/logcat.conf"
+# Path to configuration file (String)
+CONFIG="/etc/logcat.conf"
 
-DEF_LINES=25
-SEP_SYMBOL="-"
+# Default number of lines for tail/head (Number)
+DEFAULT_LINES=25
 
-########################################################################################
+################################################################################
 
 main() {
-  if [[ ! -t 1 || -n "$no_colors" ]] ; then
+  if [[ ! -t 1 || -n "$no_color" || -n "$NO_COLOR" ]] ; then
     unset NORM BOLD UNLN RED GREEN YELLOW BLUE MAG CYAN GREY DARK
     unset CL_NORM CL_BOLD CL_UNLN CL_RED CL_GREEN CL_YELLOW CL_BLUE CL_MAG CL_CYAN CL_GREY CL_DARK
     unset CL_BL_RED CL_BL_GREEN CL_BL_YELLOW CL_BL_BLUE CL_BL_MAG CL_BL_CYAN CL_BL_GREY CL_BL_DARK
+    no_color=true
   fi
 
-  [[ -n "$version" || -n "$ver" ]] && about && exit 0
-  [[ $# -eq 0 || -n "$usage" || -n "$help" ]] && usage && exit 0
+  if [[ -n "$version" || -n "$ver" ]] ; then
+    about
+    exit 0
+  fi
 
-  [[ "$head" == "true" ]] && head=$DEF_LINES
-  [[ "$tail" == "true" ]] && tail=$DEF_LINES
+  if [[ -n "$help" || $# -eq 0 ]] ; then
+    usage
+    exit 0
+  fi
+
+  [[ "$head" == "true" ]] && head=$DEFAULT_LINES
+  [[ "$tail" == "true" ]] && tail=$DEFAULT_LINES
 
   readFiles "$@"
+
+  exit $?
 }
 
 # Read all given files
 #
 # *: Paths to files
 #
-# Code: No
+# Code: Yes
 # Echo: No
 readFiles() {
-  local file path show_headers is_file_readed file_path is_root
+  local file path show_headers is_file_read
+  local file_path is_root has_errors
 
-  [[ $(id -u) -eq 0 ]] && is_root=true
+  if [[ $(id -u) -eq 0 ]] ; then
+    is_root=true
+  fi
 
-  [[ $# -gt 1 && -n "$headers" ]] && show_headers=true
+  if [[ $# -gt 1 && -n "$headers" ]] ; then
+    show_headers=true
+  fi
 
   for file in "$@" ; do
-    [[ -d "$file" ]] && continue
+    if [[ -d "$file" ]] ; then
+      continue
+    fi
 
-    is_file_readed=""
+    is_file_read=""
 
     if [[ -z "$is_root" ]] || isReadableForAll "$file" ; then
       if [[ -r "$file" ]] ; then
-        [[ -n "$show_headers" ]] && separator "$file"
+        if [[ -n "$show_headers" ]] ; then
+          separator "$file"
+        fi
 
-        readFile "$file"
+        if ! readFile "$file" ; then
+          has_errors=true
+        fi
 
-        is_file_readed=true
+        is_file_read=true
       fi
     else
       file_path=$(readlink -f "$file")
 
       while read -r path ; do
         if [[ $file_path =~ $path ]] ; then
-          [[ -n "$show_headers" ]] && separator "$file"
+          if [[ -n "$show_headers" ]] ; then
+            separator "$file"
+          fi
 
-          readFile "$file_path"
-          is_file_readed=true
+          if ! readFile "$file_path" ; then
+            has_errors=true
+          fi
+
+          is_file_read=true
 
           break
         fi
-      done < <(grep -Pv '^[ ]*(#(?!\!)|[ ]*$)' $CONF)
+      done < <(grep -Pv '^[ ]*(#(?!\!)|[ ]*$)' $CONFIG)
     fi
 
-    if [[ -z "$is_file_readed" && -z "$ignore_errors" ]] ; then
+    if [[ -z "$is_file_read" && -z "$ignore_errors" ]] ; then
       if [[ -z "$is_root" ]] ; then
         error "Can't read file ${CL_BL_RED}${file}${CL_RED} - file reading is not allowed. Forgot sudo prefix?" $RED
+        has_errors=true
       else
         error "Can't read file ${CL_BL_RED}${file}${CL_RED} - file reading is not allowed" $RED
+        has_errors=true
       fi
     fi
   done
 
-  [[ -n "$show_headers" ]] && separator
+  if [[ -n "$show_headers" ]] ; then
+    separator
+  fi
+
+  if [[ -n "$has_errors" ]] ; then
+    return 1
+  fi
+
+  return 0
 }
 
 # Read file
@@ -138,58 +192,66 @@ readFiles() {
 # Echo: No
 readFile() {
   local file="$1"
-  local app ext
 
-  ext="${file//*\./}"
+  local app="cat"
+  local ext="${file//*\./}"
 
   if [[ "$ext" == "gz" ]] ; then
-    if ! checkDeps "gzip" ; then
+    if ! hasApp "gzip" ; then
       error "Can't read file ${CL_BL_RED}${file}${CL_RED} - gzip is not installed" $RED
+      return 1
     else
       app="zcat"
     fi
   elif [[ "$ext" == "bz" ]] ; then
-    if ! checkDeps "bzip2" ; then
+    if ! hasApp "bzip2" ; then
       error "Can't read file ${CL_BL_RED}${file}${CL_RED} - zcat is not installed" $RED
+      return 1
     else
       app="bzcat"
     fi
   elif [[ "$ext" == "7z" ]] ; then
-    if ! checkDeps "7zcat" ; then
+    if ! hasApp "7zcat" ; then
       error "Can't read file ${CL_BL_RED}${file}${CL_RED} - 7zcat is not installed" $RED
+      return 1
     else
       app="7zcat"
     fi
   elif [[ "$ext" == "xz" ]] ; then
-    if ! checkDeps "xz" ; then
+    if ! hasApp "xz" ; then
       error "Can't read file ${CL_BL_RED}${file}${CL_RED} - xz is not installed" $RED
+      return 1
     else
       app="xzcat"
     fi
   elif [[ "$ext" == "lz" ]] ; then
-    if ! checkDeps "xz" ; then
+    if ! hasApp "xz" ; then
       error "Can't read file ${CL_BL_RED}${file}${CL_RED} - xz is not installed" $RED
+      return 1
     else
       app="lzcat"
     fi
-  else
-    app="cat"
   fi
 
   if [[ "$app" == "cat" && -n "$follow" ]] ; then
     tail -f "$file"
-    exit 0
+    return $?
   elif [[ -n "$head" ]] ; then
     $app "$file" | head "-${head}"
+    return $?
   elif [[ -n "$tail" ]] ; then
     $app "$file" | tail "-${tail}"
+    return $?
   else
     if [[ -n "$grep" ]] ; then
       LC_ALL=C $app "$file" | grep "$grep"
+      return $?
     elif [[ -n "$egrep" ]]; then
       LC_ALL=C $app "$file" | grep "$egrep"
+      return $?
     else
       $app "$file"
+      return $?
     fi
   fi
 }
@@ -202,21 +264,22 @@ readFile() {
 # Echo: No
 separator() {
   local title="$1"
+  local win_width i sep
 
-  local i sep cols
-
-  cols=$(tput cols)
-
-  for i in $(seq 1 "$cols") ; do
-    sep="${sep}${SEP_SYMBOL}"
-  done
+  win_width=$(stty size 2>/dev/null | cut -f2 -d' ')
+  win_width="${win_width:-88}"
 
   if [[ -n "$title" ]] ; then
-    local adds=$(( cols - ${#title} - 4 ))
-    show "\n${SEP_SYMBOL}${SEP_SYMBOL} $title ${sep:0:$adds}\n" $GREY
-  else
-    show "\n$sep\n" $GREY
+    win_width=$(( win_width - (${#title} + 4) ))
+    sep="-- ${CL_BOLD}$title${CL_GREY} "
   fi
+
+  # shellcheck disable=SC2034
+  for i in $(seq 1 "$win_width") ; do
+    sep="${sep}-"
+  done
+
+  show "\n${sep}\n" $GREY
 }
 
 # Check if file readable for all
@@ -233,22 +296,21 @@ isReadableForAll() {
   return 1
 }
 
-# Check required dependencies
+# Check if given app is installed
 #
-# *: Required apps
+# 1: Binary name (String)
 #
-# Code: No
+# Code: Yes
 # Echo: No
-checkDeps() {
-  for app in "$@" ; do
-    type -P "$app" &> /dev/null
-    [[ $? -eq 1 ]] && return 1
-  done
+hasApp() {
+  if ! type -P "$1" &> /dev/null ; then
+    return 1
+  fi
 
   return 0
 }
 
-###############################################################################
+################################################################################
 
 # Show message
 #
@@ -258,10 +320,42 @@ checkDeps() {
 # Code: No
 # Echo: No
 show() {
-  if [[ -n "$2" && -z "$no_colors" ]] ; then
+  if [[ -n "$2" && -z "$no_color" ]] ; then
     echo -e "\e[${2}m${1}\e[0m"
   else
     echo -e "$*"
+  fi
+}
+
+# Print formated message with option info
+#
+# 1: Option (String)
+# 2: Description (String)
+# 3: Arguments (String) [Optional]
+#
+# Code: No
+# Echo: No
+showo() {
+  local optn optd optp optt optf breadcrumbs
+
+  optn="$1"
+  optd="$2"
+  optp="$3"
+
+  if [[ -n "$DARK" ]] ; then
+    breadcrumbs="............................"
+  else
+    breadcrumbs="                            "
+  fi
+
+  if [[ -z "$optp" ]] ; then
+    optt="$optn"
+    optf=$(( 21 - ${#optt} ))
+    echo -e "  ${CL_GREEN}${optn}${CL_NORM} ${CL_DARK}${breadcrumbs:0:$optf}${CL_NORM} $optd"
+  else
+    optt="$optn $optp"
+    optf=$(( 21 - ${#optt} ))
+    echo -e "  ${CL_GREEN}${optn}${CL_NORM} ${CL_GREY}${optp}${CL_NORM} ${CL_DARK}${breadcrumbs:0:$optf}${CL_NORM} $optd"
   fi
 }
 
@@ -273,7 +367,7 @@ show() {
 # Code: No
 # Echo: No
 error() {
-  show "$@" 1>&2
+  show "▲ $*" $RED 1>&2
 }
 
 # Print usage info
@@ -282,31 +376,19 @@ error() {
 # Echo: No
 usage() {
   show ""
-  show "${CL_BOLD}Usage:${CL_NORM} logcat ${CL_GREEN}{options}${CL_NORM} file..."
+  show "${CL_BOLD}Usage:${CL_NORM} logcat ${CL_GREEN}{options}${CL_NORM} file…"
   show ""
   show "${CL_BOLD}Options${CL_NORM}"
   show ""
-  if [[ -n "$DARK" ]] ; then
-    show "  ${CL_GREEN}--follow, -f${CL_NORM} ${CL_DARK}.........${CL_NORM} Output appended data as the file grows"
-    show "  ${CL_GREEN}--head, -h ${CL_GREY}num${CL_NORM} ${CL_DARK}.......${CL_NORM} Output the first part of files"
-    show "  ${CL_GREEN}--tail, -t ${CL_GREY}num${CL_NORM} ${CL_DARK}.......${CL_NORM} Output the last part of files"
-    show "  ${CL_GREEN}--grep, -g ${CL_GREY}text${CL_NORM} ${CL_DARK}......${CL_NORM} Filter output by grep"
-    show "  ${CL_GREEN}--egrep, -G ${CL_GREY}pattern${CL_NORM} ${CL_DARK}..${CL_NORM} Filter output by egrep"
-    show "  ${CL_GREEN}--headers, -H${CL_NORM} ${CL_DARK}........${CL_NORM} Show headers if more than 1 file"
-    show "  ${CL_GREEN}--ignore-errors, -I${CL_NORM} ${CL_DARK}..${CL_NORM} Don't show error messages if file isn't readable or doesn't exist"
-    show "  ${CL_GREEN}--help, -h${CL_NORM} ${CL_DARK}...........${CL_NORM} Show this help message"
-    show "  ${CL_GREEN}--version, -v${CL_NORM} ${CL_DARK}........${CL_NORM} Show information about version"
-  else
-    show "  ${CL_GREEN}--follow, -f${CL_NORM}           Output appended data as the file grows"
-    show "  ${CL_GREEN}--head, -h ${CL_GREY}num${CL_NORM}         Output the first part of files"
-    show "  ${CL_GREEN}--tail, -t ${CL_GREY}num${CL_NORM}         Output the last part of files"
-    show "  ${CL_GREEN}--grep, -g ${CL_GREY}text${CL_NORM}        Filter output by grep"
-    show "  ${CL_GREEN}--egrep, -G ${CL_GREY}pattern${CL_NORM}    Filter output by egrep"
-    show "  ${CL_GREEN}--headers, -H${CL_NORM}          Show headers if more than 1 file"
-    show "  ${CL_GREEN}--ignore-errors, -I${CL_NORM}    Don't show error messages if file isn't readable or doesn't exist"
-    show "  ${CL_GREEN}--help, -h${CL_NORM}             Show this help message"
-    show "  ${CL_GREEN}--version, -v${CL_NORM}          Show information about version"
-  fi
+  showo "--follow, -f" "Output appended data as the file grows"
+  showo "--head, -h" "Output the first part of files" "lines"
+  showo "--tail, -t" "Output the last part of files" "lines"
+  showo "--grep, -g" "Filter output by grep" "text"
+  showo "--egrep, -G" "Filter output by egrep" "pattern"
+  showo "--headers, -H" "Show headers if more than 1 file are given"
+  showo "--no-color, -nc" "Disable colors in output"
+  showo "--help, -h" "Show this help message"
+  showo "--version, -v" "Show information about version"
   show ""
   show "Examples" $BOLD
   show ""
@@ -332,122 +414,123 @@ about() {
   show "Apache License, Version 2.0 <https://www.apache.org/licenses/LICENSE-2.0>" $DARK
 }
 
-# Show warning message about unsupported argument
+# Show warning message about unsupported option
 #
-# 1: Argument name (String)
+# 1: Option name (String)
 #
 # Code: No
 # Echo: No
-showArgWarn() {
-  error "Unknown argument $1" $RED
+showOptWarn() {
+  error "Unknown option $1"
   exit 1
 }
 
-## ARGUMENTS PARSING 4 #################################################################
+## OPTIONS PARSING 5 ###########################################################
 
-[[ $# -eq 0 ]] && main && exit $?
+if [[ $# -eq 0 ]] ; then
+  main
+fi
 
-unset arg argn argm argv argt argk
+unset opt optn optm optv optt optk
 
-argv="$*" ; argt=""
+optv="$*" ; optt=""
 
 while [[ -n "$1" ]] ; do
-  if [[ "$1" =~ \  && -n "$argn" ]] ; then
-    declare "$argn=$1"
+  if [[ "$1" =~ \  && -n "$optn" ]] ; then
+    declare "$optn=$1"
 
-    unset argn && shift && continue
+    unset optn && shift && continue
   elif [[ $1 =~ ^-{1}[a-zA-Z0-9]{1,2}+.*$ ]] ; then
-    argm=${1:1}
+    optm=${1:1}
 
-    if [[ \ $SHORT_ARGS\  =~ \ $argm:!?([a-zA-Z0-9_]*) ]] ; then
-      arg="${BASH_REMATCH[1]}"
+    if [[ \ $SHORT_OPTS\  =~ \ $optm:!?([a-zA-Z0-9_]*) ]] ; then
+      opt="${BASH_REMATCH[1]}"
     else
-      declare -F showArgWarn &>/dev/null && showArgWarn "-$argm"
+      declare -F showOptWarn &>/dev/null && showOptWarn "-$optm"
       shift && continue
     fi
 
-    if [[ -z "$argn" ]] ; then
-      argn=$arg
+    if [[ -z "$optn" ]] ; then
+      optn=$opt
     else
       # shellcheck disable=SC2015
-      [[ -z "$argk" ]] && ( declare -F showArgValWarn &>/dev/null && showArgValWarn "--$argn" ) || declare "$argn=true"
-      argn=$arg
+      [[ -z "$optk" ]] && ( declare -F showOptValWarn &>/dev/null && showOptValWarn "--$optn" ) || declare "$optn=true"
+      optn=$opt
     fi
 
-    if [[ ! $SUPPORTED_ARGS\  =~ !?$argn\  ]] ; then
-      declare -F showArgWarn &>/dev/null && showArgWarn "-$argm"
+    if [[ ! $SUPPORTED_OPTS\  =~ !?$optn\  ]] ; then
+      declare -F showOptWarn &>/dev/null && showOptWarn "-$optm"
       shift && continue
     fi
 
     if [[ ${BASH_REMATCH[0]:0:1} == "!" ]] ; then
-      declare "$argn=true" ; unset argn ; argk=true
+      declare "$optn=true" ; unset optn ; optk=true
     else
-      unset argk
+      unset optk
     fi
 
     shift && continue
   elif [[ "$1" =~ ^-{2}[a-zA-Z]{1}[a-zA-Z0-9_-]+.*$ ]] ; then
-    arg=${1:2}
+    opt=${1:2}
 
-    if [[ $arg == *=* ]] ; then
-      IFS="=" read -ra arg <<< "$arg"
+    if [[ $opt == *=* ]] ; then
+      IFS="=" read -ra opt <<< "$opt"
 
-      argm="${arg[0]}" ; argm=${argm//-/_}
+      optm="${opt[0]}" ; optm=${optm//-/_}
 
-      if [[ ! $SUPPORTED_ARGS\  =~ $argm\  ]] ; then
-        declare -F showArgWarn &>/dev/null && showArgWarn "--${arg[0]//_/-}"
+      if [[ ! $SUPPORTED_OPTS\  =~ $optm\  ]] ; then
+        declare -F showOptWarn &>/dev/null && showOptWarn "--${opt[0]//_/-}"
         shift && continue
       fi
 
       # shellcheck disable=SC2015
-      [[ -n "${!argm}" && $MERGEABLE_ARGS\  =~ $argm\  ]] && declare "$argm=${!argm} ${arg[*]:1:99}" || declare "$argm=${arg[*]:1:99}"
+      [[ -n "${!optm}" && $MERGEABLE_OPTS\  =~ $optm\  ]] && declare "$optm=${!optm} ${opt[*]:1:99}" || declare "$optm=${opt[*]:1:99}"
 
-      unset argm && shift && continue
+      unset optm && shift && continue
     else
       # shellcheck disable=SC2178
-      arg=${arg//-/_}
+      opt=${opt//-/_}
 
-      if [[ -z "$argn" ]] ; then
+      if [[ -z "$optn" ]] ; then
         # shellcheck disable=SC2128
-        argn=$arg
+        optn=$opt
       else
         # shellcheck disable=SC2015
-        [[ -z "$argk" ]] && ( declare -F showArgValWarn &>/dev/null && showArgValWarn "--$argn" ) || declare "$argn=true"
+        [[ -z "$optk" ]] && ( declare -F showOptValWarn &>/dev/null && showOptValWarn "--$optn" ) || declare "$optn=true"
         # shellcheck disable=SC2128
-        argn=$arg
+        optn=$opt
       fi
 
-      if [[ ! $SUPPORTED_ARGS\  =~ !?$argn\  ]] ; then
-        declare -F showArgWarn &>/dev/null && showArgWarn "--${argn//_/-}"
+      if [[ ! $SUPPORTED_OPTS\  =~ !?$optn\  ]] ; then
+        declare -F showOptWarn &>/dev/null && showOptWarn "--${optn//_/-}"
         shift && continue
       fi
 
       if [[ ${BASH_REMATCH[0]:0:1} == "!" ]] ; then
-        declare "$argn=true" ; unset argn ; argk=true
+        declare "$optn=true" ; unset optn ; optk=true
       else
-        unset argk
+        unset optk
       fi
 
       shift && continue
     fi
   else
-    if [[ -n "$argn" ]] ; then
+    if [[ -n "$optn" ]] ; then
       # shellcheck disable=SC2015
-      [[ -n "${!argn}" && $MERGEABLE_ARGS\  =~ $argn\  ]] && declare "$argn=${!argn} $1" || declare "$argn=$1"
+      [[ -n "${!optn}" && $MERGEABLE_OPTS\  =~ $optn\  ]] && declare "$optn=${!optn} $1" || declare "$optn=$1"
 
-      unset argn && shift && continue
+      unset optn && shift && continue
     fi
   fi
 
-  argt="$argt $1" ; shift
-
+  optt="$optt $1" ; shift
 done
 
-[[ -n "$argn" ]] && declare "$argn=true"
+[[ -n "$optn" ]] && declare "$optn=true"
 
-unset arg argn argm argk
+unset opt optn optm optk
 
 # shellcheck disable=SC2015,SC2086
-[[ -n "$KEEP_ARGS" ]] && main $argv || main ${argt:1}
+[[ -n "$KEEP_OPTS" ]] && main $optv || main ${optt:1}
 
-########################################################################################
+################################################################################
