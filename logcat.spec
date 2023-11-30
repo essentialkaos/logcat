@@ -1,24 +1,8 @@
 ################################################################################
 
-%define _logdir   %{_localstatedir}/log
-%define _rundir   %{_localstatedir}/run
-%define _lockdir  %{_localstatedir}/lock
-
-%define _loc_prefix       %{_prefix}/local
-%define _loc_exec_prefix  %{_loc_prefix}
-%define _loc_bindir       %{_loc_exec_prefix}/bin
-%define _loc_libdir       %{_loc_exec_prefix}/%{_lib}
-%define _loc_libexecdir   %{_loc_exec_prefix}/libexec
-%define _loc_sbindir      %{_loc_exec_prefix}/sbin
-%define _loc_bindir       %{_loc_exec_prefix}/bin
-%define _loc_datarootdir  %{_loc_prefix}/share
-%define _loc_includedir   %{_loc_prefix}/include
-
-################################################################################
-
 Summary:    Utility for log viewing with additional access control mechanism
 Name:       logcat
-Version:    2.2.0
+Version:    2.2.1
 Release:    0%{?dist}
 License:    Apache License, Version 2.0
 Group:      Applications/System
@@ -58,7 +42,7 @@ rm -rf %{buildroot}
 ################################################################################
 
 %files
-%defattr(-, root, root, -)
+%defattr(-,root,root,-)
 %doc LICENSE
 %config(noreplace) %{_sysconfdir}/%{name}.conf
 %{_bindir}/%{name}
@@ -66,6 +50,9 @@ rm -rf %{buildroot}
 ################################################################################
 
 %changelog
+* Thu Nov 30 2023 Anton Novojilov <andy@essentialkaos.com> - 2.2.1-0
+- Code refactoring
+
 * Thu Feb 02 2023 Anton Novojilov <andy@essentialkaos.com> - 2.2.0-0
 - Code refactoring
 
