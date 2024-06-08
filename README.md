@@ -30,32 +30,7 @@ sudo make install
 
 ### Usage
 
-```
-Usage: logcat {options} file…
-
-Options
-
-  --follow, -f           Output appended data as the file grows
-  --head, -h lines       Output the first part of files
-  --tail, -t lines       Output the last part of files
-  --grep, -g text        Filter output by grep
-  --egrep, -G pattern    Filter output by egrep
-  --headers, -H          Show headers if more than 1 file are given
-  --no-color, -nc        Disable colors in output
-  --help, -h             Show this help message
-  --version, -v          Show information about version
-
-Examples
-
-  logcat some-file.tar.gz
-  Print some-file.tar.gz content
-
-  logcat -f some-file.log
-  Output appended to some-file.log data as the file grows
-
-  logcat -g 'SOME_TEXT' -t 10 *.7z
-  Read all 7z files, filter data by grep pattern and print only last 10 lines lines
-```
+<img src=".github/images/usage.svg" />
 
 ### Build Status
 
