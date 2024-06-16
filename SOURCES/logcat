@@ -9,7 +9,7 @@ fi
 ################################################################################
 
 APP="LogCat"
-VER="2.2.1"
+VER="2.2.2"
 
 ################################################################################
 
@@ -85,7 +85,7 @@ DEFAULT_LINES=25
 ################################################################################
 
 main() {
-  if [[ ! -c /dev/stdout || -n "$no_color" || -n "$NO_COLOR" ]] ; then
+  if [[ -n "$no_color" || -n "$NO_COLOR" ]] || [[ ! -c /dev/stdout && -z $FAKETTY ]] ; then
     unset NORM BOLD CL_ITLC UNLN RED GREEN YELLOW BLUE MAG CYAN GREY DARK
     unset CL_NORM CL_BOLD CL_UNLN CL_RED CL_GREEN CL_YELLOW CL_BLUE CL_MAG CL_CYAN CL_GREY CL_DARK
     unset CL_BL_RED CL_BL_GREEN CL_BL_YELLOW CL_BL_BLUE CL_BL_MAG CL_BL_CYAN CL_BL_GREY CL_IT_DARK
@@ -397,13 +397,13 @@ usage() {
   show "Examples" $BOLD
   show ""
   show "  logcat some-file.tar.gz"
-  show "  ${CL_IT_DARK}Print some-file.tar.gz content${CL_NORM}"
+  show "  Print some-file.tar.gz content" $DARK
   show ""
   show "  logcat -f some-file.log"
-  show "  ${CL_IT_DARK}Output appended to some-file.log data as the file grows${CL_NORM}"
+  show "  Output appended to some-file.log data as the file grows" $DARK
   show ""
   show "  logcat -g 'SOME_TEXT' -t 10 *.7z"
-  show "  ${CL_IT_DARK}Read all 7z files, filter data by grep pattern and print only last 10 lines${CL_NORM}"
+  show "  Read all 7z files, filter data by grep pattern and print only last 10 lines" $DARK
   show ""
 }
 
