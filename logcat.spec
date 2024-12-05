@@ -2,7 +2,7 @@
 
 Summary:    Utility for log viewing with additional access control mechanism
 Name:       logcat
-Version:    2.2.2
+Version:    2.2.3
 Release:    0%{?dist}
 License:    Apache License, Version 2.0
 Group:      Applications/System
@@ -50,6 +50,9 @@ rm -rf %{buildroot}
 ################################################################################
 
 %changelog
+* Fri Dec 06 2024 Anton Novojilov <andy@essentialkaos.com> - 2.2.3-0
+- Improved options parser
+
 * Sun Jun 09 2024 Anton Novojilov <andy@essentialkaos.com> - 2.2.2-0
 - Improved automatic disabling of color output usage
 
