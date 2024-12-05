@@ -435,6 +435,7 @@ showOptWarn() {
 
 if [[ $# -eq 0 ]] ; then
   main
+  exit $?
 fi
 
 unset opt optn optm optv optt optk
